@@ -11,10 +11,10 @@ public class RotateControl : MonoBehaviour
     private float m_previousX;
     private float dX;
     [Range(1, 50)] [SerializeField] public float rotSensivity;
-
+    int rotDirection = -1;
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
@@ -42,9 +42,16 @@ public class RotateControl : MonoBehaviour
         {
             dX = (Input.mousePosition.x - m_previousX);
             dY = (Input.mousePosition.y - m_previousY);
-
+            if(Input.mousePosition.y > Camera.main.WorldToScreenPoint(transform.position).y)
+            {
+                rotDirection = 1;
+            }
+            else
+            {
+                rotDirection = -1;
+            }
             transform.Rotate(0, dX * Time.deltaTime, 0);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y + Mathf.Clamp(dX, -rotSensivity, rotSensivity), transform.eulerAngles.z), rotSensivity * Mathf.Abs(dX) * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y + Mathf.Clamp(dX, -rotSensivity, rotSensivity), transform.eulerAngles.z), rotDirection * rotSensivity * Mathf.Abs(dX) * Time.deltaTime);
             m_previousX = Input.mousePosition.x;
             m_previousY = Input.mousePosition.y;
         }
